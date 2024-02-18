@@ -4,7 +4,7 @@ import random
 import time
 import math
 from Bmutator import *
-from LLM.LLMmutator import *
+from LLMmutator import *
 from SplitBinText.split import Split_text_binary, Restore_text_binary
 import itertools
 
@@ -45,13 +45,13 @@ class Mutator():
             if self.mutate_cur_map[h] >= len(self.mutate_map[h]) - 1:
                 self.mutate_cur_map[h] = 0
             self.mutate_cur_map[h] += 1
-            logger.debug("[Info] Find in cache, hash: %d, pos: %d", h, self.mutate_cur_map[h])
+            logger.error("[Info] Find in cache, hash: %d, pos: %d", h, self.mutate_cur_map[h])
             return self.mutate_map[h][self.mutate_cur_map[h]]
 
         logger.info("[Info] Start mutator, buf:%s", input_data)
         # 分割二进制和文本
         annotations, bin_list, str_list = Split_text_binary(input_data)
-        logger.debug("[Debug] bin_list: %s, str_list: %s", str(bin_list), str(str_list))
+        logger.info("[Debug] bin_list: %s, str_list: %s", str(bin_list), str(str_list))
 
         # LLM
         l_list = LLMmutator(str_list)
@@ -81,10 +81,33 @@ class Mutator():
             self.last_trace_bits = trace_bits
             self.last_testcase = self.last_testcase
             logger.info("[Info] New testcase found, tbytes: %d, testcase: %s", self.last_tbytes, self.last_testcase)
-            logger.info("[Info] Edit path: %s", str(FindEditPath(self.last_testcase, self.all_path)))
             
+            edit_path = FindEditPath(self.last_testcase, self.all_path)
+            logger.info("[Info] Edit path: %s", str(edit_path))
+            self.handle_edit_path(edit_path)
             # 查找后再加到all_path中
             self.all_path.append(self.last_testcase)
+
+    def handle_edit_path(self, edit_paths):
+        for path in edit_paths:
+            s2, distance, edits = path
+            if distance == 0:
+                logger.debug("[Info] Distance is 0, skip")
+                continue
+            # indata s2
+            # pos edits 1
+            # next char edits 2
+            if distance >= 5:
+                logger.debug("[Info] Distance is too large, skip")
+                continue
+            for edit in edits:
+                pos = edit[1]
+                next_char = edit[2]
+                if edit[0] == 'delete':
+                    next_char = b'\x00'
+                Update([s2], pos, next_char)
+                logger.error("[Info] Update, s2:%s, pos:%d, next_char:%s", s2, pos, next_char)
+
 
 
     def get_mutate_times(self):

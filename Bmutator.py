@@ -104,7 +104,7 @@ def FindEditPath(s1, string_list):
     closest_strings, closest_distance = find_closest_string(s1, string_list)
     res = []
     for s2 in closest_strings:
-        distance, edits = levenshtein_distance_with_path(s1, s2)
+        distance, edits = levenshtein_distance_with_path(s2, s1)
         res.append((s2, distance, edits))
     return res
 
@@ -188,6 +188,8 @@ def tiny_havoc(bin_list, pos_list, ex_byte):
 
     return mutated_bin_list
 
+def Update(state, target_positions, target_next_char):
+    bilstm.update_model(state, target_positions, target_next_char)
 
 if __name__ == "__main__":
     # # Example usage:

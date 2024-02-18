@@ -2,6 +2,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch
+import logging
+import os
+
+logger = logging.getLogger()
 
 def bytes_to_one_hot(byte_array, seq_len=512, input_size=256):
     # 初始化一个全0的张量，形状是 [seq_len, input_size]
@@ -127,6 +131,7 @@ class BiLSTM():
         self.optimizer.zero_grad()  # 清空之前的梯度
         loss.backward()        # 反向传播
         self.optimizer.step()       # 更新模型权重
+        logger.info("[Info] Update model, loss: %.5f", loss.item())
 
 
     def get_mutate_pos_byte(self, input_data):
@@ -137,7 +142,8 @@ class BiLSTM():
         result_bytes_topm = one_hot_to_bytes_topm(next_char_output, 3)
         result_pos_topm = one_hot_to_bytes_topm(output, 10, 1)
         for seq in range(len(result_bytes_topm)):
-            print(f"Position {seq}: {result_bytes_topm[0][seq]}")
+            logger.debug("[Info] Position %d: %s", seq, result_bytes_topm[0][seq])
+        logger.info("[Info] Get mutate position and next char, result_pos_topm: %s, result_bytes_topm: %s", str(result_pos_topm), str(result_bytes_topm))
         return result_pos_topm[0][0], result_bytes_topm[0][0]
     
 
