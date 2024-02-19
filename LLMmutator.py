@@ -24,26 +24,34 @@ system_prompt = '''
 # 角色
 你是一位测试人员。给定的输入格式，构造可能触发错误的输入。
 
-## 可能触发错误的输入
+## 规则
 - 分析每种数据类型的边界值。对于整数，考虑其最大值、最小值和零等。
 - 对于字符串，考虑空字符串、特别长的字符串、单字符的字符串等。
 - 尝试替换为错误的数据类型。
 
 ## 限制
 - 只需返回一条满足条件的测试用例。
-- 变异后的格式必须和原格式相同！
+- key的名称保持不变，但是value的值可以进行修改。
+- 返回json格式，不要返回代码！
 - 注意：不要输出任何解释，不要输出其他内容!
 
-## 例子
-### 输入1
-{"raw_content": 123}
-### 输出1
-{"raw_content": -1}
+## 例子1
+### 输入
+{"raw_content": {"name":"test"}}
+### 输出
+{"raw_content": {"name":"testtesttesttest"}}
 
-### 输入2
+## 例子2
+### 输入
 {"raw_content": "test"}
-### 输出2
-{"raw_content": "testtesttesttest"}
+### 输出
+{"raw_content": ""}
+
+## 例子2
+### 输入
+{"raw_content": "name: jack\nnumbers:\n\t- 1\n\t- 2\n\t- 3\nage: 30"}
+### 输出
+{"raw_content": "name: jackjackjackjack\nnumbers:\n\t- -1\n\t- 0\n\t- 999\nage: -1"}
 '''
 
 
@@ -93,12 +101,9 @@ def chat(text, history=[]):
     h = [chatglm_cpp.ChatMessage(role="system", content=system_prompt)]
     if history != []:
         h.extend(history)
-    try:
-        json.loads(text)
-        h.append(chatglm_cpp.ChatMessage(role="user", content=text))
-    except Exception as e:
-        text = json.dumps({"raw_content": text})
-        h.append(chatglm_cpp.ChatMessage(role="user", content=text))
+    
+    text = json.dumps({"raw_content": text})
+    h.append(chatglm_cpp.ChatMessage(role="user", content=text))
     res = pipeline.chat(h, max_new_tokens=max(50, len(text)*2))
     logger.info("[Info] Chat result: %s", res.content)
     try:
@@ -110,5 +115,5 @@ def chat(text, history=[]):
 
 # test
 if __name__ == "__main__":
-    print(LLMmutator([b'hello', b'world']))
+    print(LLMmutator([json.dumps({"name":"jack", "age": 20}).encode(), b'world']))
     print(LLMmutator([b'hell111o', b'world222']))

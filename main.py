@@ -47,7 +47,7 @@ def fuzz(buf, add_buf, max_size):
     return buf
 
 def fuzz_count(buf):
-    return mutator.mutate_times
+    return mutator.get_mutate_times(buf)
 
 # 当变异完成后，运行 target 前调用
 def post_process(buf):

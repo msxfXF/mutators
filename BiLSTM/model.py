@@ -35,9 +35,9 @@ def one_hot_to_bytes_topm(one_hot_tensor, top_m, dim=2):
     
     return results_bytes_topm
 
-class BiLSTMTransformerModel(nn.Module):
+class PolicyNetwork(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, dropout, nhead, transformer_layers):
-        super(BiLSTMTransformerModel, self).__init__()
+        super(PolicyNetwork, self).__init__()
         self.input_size = input_size
 
         # 双向LSTM
@@ -62,10 +62,10 @@ class BiLSTMTransformerModel(nn.Module):
         )
 
         # 定义针对原序列每个位置定义的操作敏感位置
-        self.fc1 = nn.Linear(hidden_size*2, 1) 
+        self.action_pos = nn.Linear(hidden_size*2, 1) 
 
         # 用于预测下一个字符的top M个可能性
-        self.top_m_fc = nn.Linear(hidden_size*2, input_size)
+        self.action_char = nn.Linear(hidden_size*2, input_size)
 
     def forward(self, x):
         # BiLSTM层
@@ -76,35 +76,35 @@ class BiLSTMTransformerModel(nn.Module):
         transformer_out = self.transformer_encoder(lstm_out.transpose(0, 1)).transpose(0, 1)
 
         # 预测删除、新增、替换操作敏感位置的概率
-        sensitive_position_out = self.fc1(transformer_out)  # 这里的输出形状会是 [batch_size, seq_len, 1]
-        sensitive_position_out = F.softmax(sensitive_position_out, dim=1)
+        action_pos_out = self.action_pos(transformer_out)  # 这里的输出形状会是 [batch_size, seq_len, 1]
+        action_pos_out = F.softmax(action_pos_out, dim=1)
         # torch.Size([1, 512, 1])
 
         # 预测下一个字符的top M个可能性
-        next_char_out = self.top_m_fc(transformer_out[:,-1,:])  # 只取序列最后一个时间步的输出
-        next_char_out = next_char_out.view(-1, 1, self.input_size)
-        next_char_out = F.softmax(next_char_out, dim=2)  # 在每个可能的下一个字符上应用softmax
+        action_char_out = self.action_char(transformer_out[:,-1,:])  # 只取序列最后一个时间步的输出
+        action_char_out = action_char_out.view(-1, 1, self.input_size)
+        action_char_out = F.softmax(action_char_out, dim=2)  # 在每个可能的下一个字符上应用softmax
         # torch.Size([1, 1, 256])
-        return sensitive_position_out, next_char_out
+        return action_pos_out, action_char_out
 
 class BiLSTM():
     def __init__(self):
-        input_size = 256
+        state_size = 256
         hidden_size = 128
         num_layers = 2
         dropout = 0.1
         nhead = 8
         transformer_layers = 1
-        self.policy_network = BiLSTMTransformerModel(input_size, hidden_size, num_layers, dropout, nhead, transformer_layers)
+        self.policy_network = PolicyNetwork(state_size, hidden_size, num_layers, dropout, nhead, transformer_layers)
         self.optimizer = optim.Adam(self.policy_network.parameters(), lr=0.01)
 
-    def update_model(self, state, target_positions, target_next_char):
+    def learn(self, state, action_positions, action_next_char):
         # 数据处理
         state = b''.join(state)
         state = bytes_to_one_hot(state)
-        target_next_char = int.from_bytes(target_next_char, 'big')
-        target_position_tensor = torch.tensor([target_positions], dtype=torch.long)
-        target_next_char_tensor = torch.tensor([int(target_next_char)], dtype=torch.long)
+        action_next_char = int.from_bytes(action_next_char, 'big')
+        action_position_tensor = torch.tensor([action_positions], dtype=torch.long)
+        action_next_char_tensor = torch.tensor([int(action_next_char)], dtype=torch.long)
 
         self.policy_network.train()  # 设置为训练模式
 
@@ -115,23 +115,23 @@ class BiLSTM():
         # 使用CrossEntropyLoss来计算sensitive_position_out的损失（如果targets是类别）
         criterion_position = torch.nn.CrossEntropyLoss()
         sensitive_position_out = sensitive_position_out.squeeze(-1)  # 形状现在应该是 [1, 512]
-        loss_position = criterion_position(sensitive_position_out, target_position_tensor)
+        reward_position = criterion_position(sensitive_position_out, action_position_tensor)
 
         # 使用CrossEntropyLoss来计算下一个字符的损失
         criterion_next_char = torch.nn.CrossEntropyLoss()
         # 确保target_next_char_tensor是一维的，包含类别索引
         next_char_out = next_char_out.squeeze(1)  # 结果应该是一个形状为[1]的张量
         # 计算损失，不需要使用view()函数，因为next_char_out已经是正确的形状
-        loss_next_char = criterion_next_char(next_char_out, target_next_char_tensor)            
+        reward_next_char = criterion_next_char(next_char_out, action_next_char_tensor)            
 
-        # 将两个损失项结合起来，可以通过乘以奖励或其他权重来调整它们的贡献
-        loss = (loss_position + 0.1 * loss_next_char)
+        # 将两个reward相加，作为最终的reward
+        reward_total = (reward_position + 0.1 * reward_next_char)
 
         # 反向传播更新模型
         self.optimizer.zero_grad()  # 清空之前的梯度
-        loss.backward()        # 反向传播
+        reward_total.backward()        # 反向传播
         self.optimizer.step()       # 更新模型权重
-        logger.info("[Info] Update model, loss: %.5f", loss.item())
+        logger.info("[Info] Update model, loss: %.5f", reward_total.item())
 
 
     def get_mutate_pos_byte(self, input_data):
@@ -155,7 +155,7 @@ if __name__ == "__main__":
         pos, next_char = m.get_mutate_pos_byte(indata)
         pos = pos[0]
         print(next_char)
-        m.update_model(indata, pos, next_char[0])
-        m.update_model(indata, pos, next_char[1])
-        m.update_model(indata, pos, next_char[2])
+        m.learn(indata, pos, next_char[0])
+        m.learn(indata, pos, next_char[1])
+        m.learn(indata, pos, next_char[2])
 

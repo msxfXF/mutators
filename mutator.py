@@ -33,11 +33,10 @@ class Mutator():
         self.bilstm_N = 10
         self.bilstm_M = 3
         self.bilstm_extra = 1
-        self.mutate_times = self.get_mutate_times()
         self.all_path = []
         self.mutate_map = {}
         self.mutate_cur_map = {}
-        
+    
     def mutate(self, input_data):
         # 检查缓存
         h = hash(bytes(input_data))
@@ -45,13 +44,13 @@ class Mutator():
             if self.mutate_cur_map[h] >= len(self.mutate_map[h]) - 1:
                 self.mutate_cur_map[h] = 0
             self.mutate_cur_map[h] += 1
-            logger.error("[Info] Find in cache, hash: %d, pos: %d", h, self.mutate_cur_map[h])
+            logger.debug("[Info] Find in cache, hash: %d, pos: %d", h, self.mutate_cur_map[h])
             return self.mutate_map[h][self.mutate_cur_map[h]]
 
         logger.info("[Info] Start mutator, buf:%s", input_data)
         # 分割二进制和文本
         annotations, bin_list, str_list = Split_text_binary(input_data)
-        logger.info("[Debug] bin_list: %s, str_list: %s", str(bin_list), str(str_list))
+        logger.debug("[Debug] bin_list: %s, str_list: %s", str(bin_list), str(str_list))
 
         # LLM
         l_list = LLMmutator(str_list)
@@ -106,11 +105,11 @@ class Mutator():
                 if edit[0] == 'delete':
                     next_char = b'\x00'
                 Update([s2], pos, next_char)
-                logger.error("[Info] Update, s2:%s, pos:%d, next_char:%s", s2, pos, next_char)
+                logger.info("[Info] Update, s2:%s, pos:%d, next_char:%s", s2, pos, next_char)
 
 
 
-    def get_mutate_times(self):
+    def get_mutate_times(self, input_data):
         # LLM: origin + 1 * split_text
 
         # BiLSTM: origin +  C_Top10_3(120次，每次+1随机位置) * 变异数(10次)
@@ -123,11 +122,13 @@ class Mutator():
         # 4: Randomly add to byte
         # 5: Set a random byte to a random value
 
+        annotations, bin_list, str_list = Split_text_binary(input_data)
 
-        llm_times = self.llm_times + 1
+        llm_times = 2**len(str_list) + 1
 
         bilstm_times = math.comb(self.bilstm_N, self.bilstm_M) * self.bilstm_times + 1
         total_times = llm_times * bilstm_times - 1
+        total_times = min(total_times, 10000)
         logger.info("[Info] Total mutate times: %d", total_times) 
         return total_times
     
