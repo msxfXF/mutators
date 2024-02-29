@@ -1,0 +1,179 @@
+2024-02-28 10:59:21,123 - INFO - [Info] INIT Mutator!!!!
+2024-02-28 10:59:21,151 - INFO - [Info] New testcase found, tbytes: 7, testcase: b'Abcd'
+2024-02-28 10:59:21,151 - INFO - [Info] FindEditPath, s1:b'Abcd', string_list:[]
+2024-02-28 10:59:21,151 - INFO - [Info] Edit path: []
+2024-02-28 10:59:21,197 - INFO - [Info] New testcase found, tbytes: 8, testcase: b'FUZZ'
+2024-02-28 10:59:21,197 - INFO - [Info] FindEditPath, s1:b'FUZZ', string_list:[b'Abcd']
+2024-02-28 10:59:21,197 - INFO - [Info] Edit path: [(b'Abcd', 4, [('substitute', 0, b'F'), ('substitute', 1, b'U'), ('substitute', 2, b'Z'), ('substitute', 3, b'Z')])]
+2024-02-28 10:59:21,551 - INFO - [Info] Update model, loss: 6.79139
+2024-02-28 10:59:21,557 - INFO - [Info] Update, s2:b'Abcd', pos:0, next_char:b'F'
+2024-02-28 10:59:21,880 - INFO - [Info] Update model, loss: 6.78761
+2024-02-28 10:59:21,886 - INFO - [Info] Update, s2:b'Abcd', pos:1, next_char:b'U'
+2024-02-28 10:59:22,241 - INFO - [Info] Update model, loss: 6.77690
+2024-02-28 10:59:22,248 - INFO - [Info] Update, s2:b'Abcd', pos:2, next_char:b'Z'
+2024-02-28 10:59:22,562 - INFO - [Info] Update model, loss: 6.79281
+2024-02-28 10:59:22,568 - INFO - [Info] Update, s2:b'Abcd', pos:3, next_char:b'Z'
+2024-02-28 10:59:23,667 - INFO - [Info] Total mutate times: 3602
+2024-02-28 10:59:23,668 - INFO - [Info] Start mutator, buf:bytearray(b'Abcd')
+2024-02-28 10:59:34,339 - INFO - [Info] Chat result: {"raw_content": "Abcd"}
+2024-02-28 10:59:34,341 - INFO - [Info] Chat: Abcd Time: 10.672935
+2024-02-28 10:59:34,341 - INFO - [Info] LLMmutator result: [['Abcd'], ['Abcd']]
+2024-02-28 10:59:34,459 - INFO - [Info] Get mutate position and next char, result_pos_topm: [[[0, 85, 2, 309, 433, 134, 231, 259, 296, 4]]], result_bytes_topm: [[[b'U', b'Z', b'F']]]
+2024-02-28 10:59:34,471 - INFO - [Info] Bmutate, res len: 1201
+2024-02-28 10:59:34,473 - INFO - [Info] Mutate result len: 2402
+2024-02-28 10:59:53,331 - INFO - [Info] New testcase found, tbytes: 10, testcase: b'\x80'
+2024-02-28 10:59:53,331 - INFO - [Info] FindEditPath, s1:b'\x80', string_list:[b'Abcd', b'FUZZ']
+2024-02-28 10:59:53,331 - INFO - [Info] Edit path: [(b'Abcd', 4, [('substitute', 0, b'\x80'), ('delete', 1, b'b'), ('delete', 2, b'c'), ('delete', 3, b'd')]), (b'FUZZ', 4, [('substitute', 0, b'\x80'), ('delete', 1, b'U'), ('delete', 2, b'Z'), ('delete', 3, b'Z')])]
+2024-02-28 10:59:53,676 - INFO - [Info] Update model, loss: 6.78478
+2024-02-28 10:59:53,683 - INFO - [Info] Update, s2:b'Abcd', pos:0, next_char:b'\x80'
+2024-02-28 10:59:54,012 - INFO - [Info] Update model, loss: 6.78723
+2024-02-28 10:59:54,018 - INFO - [Info] Update, s2:b'Abcd', pos:1, next_char:b'\x00'
+2024-02-28 10:59:54,357 - INFO - [Info] Update model, loss: 6.75896
+2024-02-28 10:59:54,363 - INFO - [Info] Update, s2:b'Abcd', pos:2, next_char:b'\x00'
+2024-02-28 10:59:54,689 - INFO - [Info] Update model, loss: 6.76194
+2024-02-28 10:59:54,696 - INFO - [Info] Update, s2:b'Abcd', pos:3, next_char:b'\x00'
+2024-02-28 10:59:55,016 - INFO - [Info] Update model, loss: 5.84434
+2024-02-28 10:59:55,022 - INFO - [Info] Update, s2:b'FUZZ', pos:0, next_char:b'\x80'
+2024-02-28 10:59:55,360 - INFO - [Info] Update model, loss: 6.79160
+2024-02-28 10:59:55,366 - INFO - [Info] Update, s2:b'FUZZ', pos:1, next_char:b'\x00'
+2024-02-28 10:59:55,693 - INFO - [Info] Update model, loss: 6.79334
+2024-02-28 10:59:55,700 - INFO - [Info] Update, s2:b'FUZZ', pos:2, next_char:b'\x00'
+2024-02-28 10:59:56,030 - INFO - [Info] Update model, loss: 6.79371
+2024-02-28 10:59:56,036 - INFO - [Info] Update, s2:b'FUZZ', pos:3, next_char:b'\x00'
+2024-02-28 10:59:56,425 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:00:14,904 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:00:33,943 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:00:52,242 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:01:10,261 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:01:28,205 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:01:47,250 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:02:06,567 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:02:25,373 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:02:44,514 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:03:03,434 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:03:21,976 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:03:40,377 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:03:58,490 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:04:16,427 - INFO - [Info] New testcase found, tbytes: 12, testcase: b'AB\x01\x00'
+2024-02-28 11:04:16,428 - INFO - [Info] FindEditPath, s1:b'AB\x01\x00', string_list:[b'Abcd', b'FUZZ', b'\x80']
+2024-02-28 11:04:16,428 - INFO - [Info] Edit path: [(b'Abcd', 3, [('substitute', 1, b'B'), ('substitute', 2, b'\x01'), ('substitute', 3, b'\x00')])]
+2024-02-28 11:04:16,765 - INFO - [Info] Update model, loss: 6.79293
+2024-02-28 11:04:16,771 - INFO - [Info] Update, s2:b'Abcd', pos:1, next_char:b'B'
+2024-02-28 11:04:17,090 - INFO - [Info] Update model, loss: 6.79291
+2024-02-28 11:04:17,096 - INFO - [Info] Update, s2:b'Abcd', pos:2, next_char:b'\x01'
+2024-02-28 11:04:17,442 - INFO - [Info] Update model, loss: 6.79283
+2024-02-28 11:04:17,448 - INFO - [Info] Update, s2:b'Abcd', pos:3, next_char:b'\x00'
+2024-02-28 11:04:17,690 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:04:36,311 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:04:55,590 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:05:13,712 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:06:22,369 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:08:26,991 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:10:58,632 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:11:40,853 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:11:40,854 - INFO - [Info] Start mutator, buf:bytearray(b'AB\x01\x00')
+2024-02-28 11:11:47,257 - INFO - [Info] Chat result: {"raw_content": {"name": "test", "numbers": [], "age": 0}}
+2024-02-28 11:11:47,260 - INFO - [Info] Chat: {'name': 'test', 'numbers': [], 'age': 0} Time: 6.406149
+2024-02-28 11:11:47,260 - INFO - [Info] LLMmutator result: [[''], [{'name': 'test', 'numbers': [], 'age': 0}]]
+2024-02-28 11:11:47,351 - INFO - [Info] Get mutate position and next char, result_pos_topm: [[[366, 22, 39, 128, 473, 398, 350, 227, 193, 76]]], result_bytes_topm: [[[b'\x80', b'\x00', b'Z']]]
+2024-02-28 11:11:47,411 - INFO - [Info] Bmutate, res len: 1201
+2024-02-28 11:11:47,413 - INFO - [Info] Mutate result len: 2402
+2024-02-28 11:13:52,740 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:16:06,622 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:16:26,288 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:16:45,478 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:17:04,186 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:17:23,097 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:17:41,698 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:18:00,042 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:18:18,029 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:18:35,992 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:18:54,172 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:19:12,216 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:19:30,420 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:19:48,677 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:20:06,677 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:20:25,006 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:20:43,896 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:21:02,514 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:21:21,635 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:21:40,843 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:22:00,072 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:22:18,744 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:22:37,708 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:22:57,477 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:23:16,257 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:23:34,968 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:23:53,791 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:24:12,196 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:24:30,488 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:24:49,373 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:25:08,034 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:25:26,207 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:25:45,068 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:26:03,097 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:26:21,336 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:26:39,500 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:26:58,176 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:27:17,388 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:27:36,587 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:27:56,428 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:28:15,644 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:28:34,457 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:28:53,490 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:29:11,919 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:29:30,231 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:29:48,312 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:30:06,292 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:30:24,274 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:30:42,253 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:31:01,505 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:31:21,257 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:31:41,552 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:32:00,396 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:32:23,473 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:32:23,473 - INFO - [Info] Start mutator, buf:bytearray(b'\x80')
+2024-02-28 11:32:32,067 - INFO - [Info] Chat result: {"raw_content": {"name": "test", "numbers": [], "age": 0}}
+2024-02-28 11:32:32,069 - INFO - [Info] Chat: {'name': 'test', 'numbers': [], 'age': 0} Time: 8.596050
+2024-02-28 11:32:32,070 - INFO - [Info] LLMmutator result: [[''], [{'name': 'test', 'numbers': [], 'age': 0}]]
+2024-02-28 11:32:32,259 - INFO - [Info] Get mutate position and next char, result_pos_topm: [[[64, 189, 428, 384, 195, 338, 354, 221, 227, 245]]], result_bytes_topm: [[[b'\x80', b'\x00', b'Z']]]
+2024-02-28 11:32:32,277 - INFO - [Info] Bmutate, res len: 1201
+2024-02-28 11:32:32,278 - INFO - [Info] Mutate result len: 2402
+2024-02-28 11:32:51,330 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:33:10,023 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:33:29,112 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:33:48,035 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:34:06,384 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:34:25,114 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:34:43,817 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:35:02,632 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:35:21,221 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:35:39,270 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:35:57,213 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:36:15,172 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:36:33,364 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:36:52,740 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:37:11,795 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:37:30,715 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:37:49,366 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:38:08,037 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:38:26,627 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:38:45,171 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:39:03,980 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:39:22,876 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:39:41,326 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:39:59,775 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:40:18,193 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:40:36,658 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:40:55,068 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:41:13,435 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:41:31,873 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:41:50,176 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:42:08,705 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:42:27,245 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:42:45,639 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:43:04,082 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:43:22,557 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:43:41,109 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:43:59,741 - INFO - [Info] Total mutate times: 3602
+2024-02-28 11:44:18,263 - INFO - [Info] Total mutate times: 3602
