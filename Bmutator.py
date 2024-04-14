@@ -7,12 +7,6 @@ import itertools
 # 获取当然文件夹
 current_dir = os.path.dirname(os.path.abspath(__file__))
 # 配置日志
-logging.basicConfig(
-    filename=os.path.join(current_dir, 'mutator.log'),
-    filemode='a', 
-    level=logging.INFO, 
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
 logger = logging.getLogger()
 bilstm = BiLSTM()
 

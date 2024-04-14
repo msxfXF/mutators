@@ -12,12 +12,6 @@ import itertools
 # 获取当然文件夹
 current_dir = os.path.dirname(os.path.abspath(__file__))
 # 配置日志
-logging.basicConfig(
-    filename=os.path.join(current_dir, 'mutator.log'),
-    filemode='a', 
-    level=logging.INFO, 
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
 logger = logging.getLogger()
 
 
@@ -69,7 +63,7 @@ class Mutator():
         return res[0]
     
     def before_run(self, input_data):
-        logger.debug("[Debug] Before run, buf:%s", input_data)
+        logger.info("[Debug] Before run, buf:%s", input_data)
         self.last_testcase = bytes(input_data)
         
     def post_run(self, trace_bits, cov, tbytes):

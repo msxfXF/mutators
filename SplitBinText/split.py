@@ -1,5 +1,7 @@
 import math
+import logging
 
+logger = logging.getLogger()
 def calculate_entropy(data):
     if len(data) == 0:
         return 0.0
@@ -49,11 +51,13 @@ def split_text_binary(data, annotations):
     return bin_list, str_list
 
 def Split_text_binary(text):
+    logger.debug("[Debug] Split_text_binary, text:%s", text)
     annotations = annotate_text_binary(text)
     bin_list, str_list = split_text_binary(text, annotations)
     return annotations, bin_list, str_list
 
 def Restore_text_binary(bin_list, str_list, annotations):
+    logger.debug("[Debug] Restore_text_binary, bin_list:%s, str_list:%s, annotations:%s", str(bin_list), str(str_list), str(annotations))
     # 创建两个迭代器，分别用于二进制数据和文本数据
     bin_iter = iter(bin_list)
     str_iter = iter(str_list)

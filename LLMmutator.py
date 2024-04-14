@@ -22,7 +22,7 @@ pipeline = chatglm_cpp.Pipeline(model_path)
 # ]
 system_prompt = '''
 # 角色
-你是一位测试人员。给定的输入格式，构造可能触发错误的输入。
+你是一位测试人员。给定的输入格式，根据格式，保留key，将value进行改变，构造可能触发错误的输入。
 
 ## 规则
 - 分析每种数据类型的边界值。对于整数，考虑其最大值、最小值和零等。
@@ -104,9 +104,9 @@ def chat(text, history=[]):
     
     text = json.dumps({"raw_content": text})
     h.append(chatglm_cpp.ChatMessage(role="user", content=text))
-    res = pipeline.chat(h, max_new_tokens=max(50, len(text)*2))
-    logger.info("[Info] Chat result: %s", res.content)
+    res = pipeline.chat(h, max_new_tokens=max(50, len(text)*2), temperature=1.2)
     try:
+        logger.info("[Info] Chat result: %s", res.content)
         r = json.loads(res.content)
         return r["raw_content"]
     except:
@@ -115,5 +115,27 @@ def chat(text, history=[]):
 
 # test
 if __name__ == "__main__":
-    print(LLMmutator([json.dumps({"name":"jack", "age": 20}).encode(), b'world']))
-    print(LLMmutator([b'hell111o', b'world222']))
+    a = [0] * 5
+
+    a[0] = ""
+    a[1] = "提醒：请仔细分析问题要求，给出最为恰当和准确的答案，准确回答问题你将得到奖励，否则你将受到惩罚。我们对你的专业能力充满信心，期待你的答案！"
+    a[2] = "提醒：请深入思考问题要求，给出最恰当和精准的答案，准确回答问题的你将获得研究奖励，否则你将需承担研究失误的后果。我们对你专业的研究能力抱有高度期待，等待你的答案！"
+    a[3] = "请注意，你需要仔细分析每个选项，以做出最合适的决定。"
+    a[4] = "请注意，你需要对每个选项进行深入的思考，以便做出最佳的选择。我们相信你的判断力和决策能力，期待你的答案！"
+    rres = []
+    for i in range(5):
+        t = time.time()
+        succ = 0
+        resset = set()
+        for j in range(30):
+            res = LLMmutator([(json.dumps({"name":"jack", "age": 20})+a[i]).encode()])
+            try:
+                if len(res) > 1 and json.loads(res[1][0].decode()):
+                    succ += 1
+                    resset.add(res[1][0].decode())
+            except:
+                pass
+        rres.append((succ, time.time() - t, len(resset)))
+    print(rres)
+
+

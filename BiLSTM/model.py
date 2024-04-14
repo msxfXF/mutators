@@ -4,6 +4,7 @@ import torch.optim as optim
 import torch
 import logging
 import os
+import time
 
 logger = logging.getLogger()
 
@@ -88,13 +89,10 @@ class PolicyNetwork(nn.Module):
         return action_pos_out, action_char_out
 
 class BiLSTM():
-    def __init__(self):
+    def __init__(self, nhead = 8, num_layers = 2, transformer_layers = 1):
         state_size = 256
         hidden_size = 128
-        num_layers = 2
         dropout = 0.1
-        nhead = 8
-        transformer_layers = 1
         self.policy_network = PolicyNetwork(state_size, hidden_size, num_layers, dropout, nhead, transformer_layers)
         self.optimizer = optim.Adam(self.policy_network.parameters(), lr=0.01)
 
@@ -149,13 +147,27 @@ class BiLSTM():
 
 
 if __name__ == "__main__":
-    m = BiLSTM()
+    
     indata = [b'hello']
-    for i in range(10000):
-        pos, next_char = m.get_mutate_pos_byte(indata)
-        pos = pos[0]
-        print(next_char)
-        m.learn(indata, pos, next_char[0])
-        m.learn(indata, pos, next_char[1])
-        m.learn(indata, pos, next_char[2])
+    # for i in range(10000):
+    #     pos, next_char = m.get_mutate_pos_byte(indata)
+    #     pos = pos[0]
+    #     print(next_char)
+    #     m.learn(indata, pos, next_char[0])
+    #     m.learn(indata, pos, next_char[1])
+    #     m.learn(indata, pos, next_char[2])
 
+    nheads = [1, 2, 4, 8]
+    num_layers = [1, 2, 3]
+    transformer_layers = [1, 2, 3]
+    ret = []
+    args = [(i,j,k) for i in nheads for j in num_layers for k in transformer_layers]
+    for arg in args:
+        print(arg)
+        t = time.time()
+        m = BiLSTM(nhead=arg[0], num_layers=arg[1], transformer_layers=arg[2])
+        for i in range(100):
+            pos, next_char = m.get_mutate_pos_byte(indata)
+        ret.append((arg, time.time() - t))
+    print(ret)
+        
