@@ -182,8 +182,8 @@ def tiny_havoc(bin_list, pos_list, ex_byte):
 
     return mutated_bin_list
 
-def Update(state, target_positions, target_next_char):
-    bilstm.learn(state, target_positions, target_next_char)
+def Update(state, target_positions, target_next_char, cov, tbytes, score):
+    bilstm.learn(state, target_positions, target_next_char, cov, tbytes, score)
 
 if __name__ == "__main__":
     # # Example usage:

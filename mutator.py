@@ -77,11 +77,11 @@ class Mutator():
             
             edit_path = FindEditPath(self.last_testcase, self.all_path)
             logger.info("[Info] Edit path: %s", str(edit_path))
-            self.handle_edit_path(edit_path)
+            self.handle_edit_path(edit_path, cov, tbytes)
             # 查找后再加到all_path中
             self.all_path.append(self.last_testcase)
 
-    def handle_edit_path(self, edit_paths):
+    def handle_edit_path(self, edit_paths, cov = 0.1, tbytes = 0.1, score = 0.1):
         for path in edit_paths:
             s2, distance, edits = path
             if distance == 0:
@@ -98,7 +98,8 @@ class Mutator():
                 next_char = edit[2]
                 if edit[0] == 'delete':
                     next_char = b'\x00'
-                Update([s2], pos, next_char)
+                # 更新模型
+                Update([s2], pos, next_char, cov, tbytes, score)
                 logger.info("[Info] Update, s2:%s, pos:%d, next_char:%s", s2, pos, next_char)
 
 

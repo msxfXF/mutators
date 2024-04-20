@@ -5,6 +5,7 @@ import torch
 import logging
 import os
 import time
+import math
 
 logger = logging.getLogger()
 
@@ -96,7 +97,7 @@ class BiLSTM():
         self.policy_network = PolicyNetwork(state_size, hidden_size, num_layers, dropout, nhead, transformer_layers)
         self.optimizer = optim.Adam(self.policy_network.parameters(), lr=0.01)
 
-    def learn(self, state, action_positions, action_next_char):
+    def learn(self, state, action_positions, action_next_char, cov, tbytes, score):
         # 数据处理
         state = b''.join(state)
         state = bytes_to_one_hot(state)
@@ -109,25 +110,31 @@ class BiLSTM():
         # 执行一次前向传播获得模型预测
         sensitive_position_out, next_char_out = self.policy_network(state)
 
-        # 计算损失
-        # 使用CrossEntropyLoss来计算sensitive_position_out的损失（如果targets是类别）
+        # 更新函数
         criterion_position = torch.nn.CrossEntropyLoss()
         sensitive_position_out = sensitive_position_out.squeeze(-1)  # 形状现在应该是 [1, 512]
         reward_position = criterion_position(sensitive_position_out, action_position_tensor)
 
-        # 使用CrossEntropyLoss来计算下一个字符的损失
         criterion_next_char = torch.nn.CrossEntropyLoss()
-        # 确保target_next_char_tensor是一维的，包含类别索引
         next_char_out = next_char_out.squeeze(1)  # 结果应该是一个形状为[1]的张量
-        # 计算损失，不需要使用view()函数，因为next_char_out已经是正确的形状
         reward_next_char = criterion_next_char(next_char_out, action_next_char_tensor)            
 
-        # 将两个reward相加，作为最终的reward
-        reward_total = (reward_position + 0.1 * reward_next_char)
+        # 归一化 cov、tbytes、score，覆盖率、路径数、AFL Score
+        cov_log = math.log10(cov) if cov > 0 else 0.1
+        cov = cov / (10 ** math.ceil(cov_log))
 
-        # 反向传播更新模型
+        tbytes_log = math.log10(tbytes) if tbytes > 0 else 0.1
+        tbytes = tbytes / (10 ** math.ceil(tbytes_log))
+
+        score_log = math.log10(score) if score > 0 else 0.1
+        score = score / (10 ** math.ceil(score_log))
+
+        # 最终 reward
+        reward_total = (reward_position + 0.1 * reward_next_char) * (cov + tbytes + score)/3
+
+        # 更新模型
         self.optimizer.zero_grad()  # 清空之前的梯度
-        reward_total.backward()        # 反向传播
+        reward_total.backward()
         self.optimizer.step()       # 更新模型权重
         logger.info("[Info] Update model, loss: %.5f", reward_total.item())
 
